@@ -156,7 +156,6 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showOTPModal, setShowOTPModal] = useState(false);
     const [otp, setOtp] = useState('');
-    const [receivedOtpHint, setReceivedOtpHint] = useState('');
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -200,7 +199,6 @@ const Login = () => {
             });
             const data = await res.json();
             if (res.ok) {
-                if (data.otpHint) setReceivedOtpHint(data.otpHint);
                 setShowOTPModal(true);
             } else {
                 alert(data.error || 'Failed to send OTP');
@@ -524,43 +522,11 @@ const Login = () => {
                 <div style={styles.modalOverlay}>
                     <div style={styles.otpModal}>
                         <h3 style={{color: 'white', marginBottom: '0.5rem', fontWeight: 800}}>Verify Email</h3>
-                        <p style={{color: '#94a3b8', marginBottom: '1rem', fontSize: '0.88rem'}}>
-                            Verification code sent to <strong style={{color: '#0ea5e9'}}>{formData.email}</strong>
+                        <p style={{color: '#94a3b8', marginBottom: '1.2rem', fontSize: '0.9rem', lineHeight: 1.5}}>
+                            A 6-digit verification code has been sent to your registered email address:<br/>
+                            <strong style={{color: '#0ea5e9'}}>{formData.email}</strong><br/>
+                            <span style={{fontSize: '0.8rem', color: '#64748b'}}>(Please check your Inbox and Spam/Junk folder)</span>
                         </p>
-
-                        {receivedOtpHint && (
-                            <div style={{
-                                background: 'rgba(14, 165, 233, 0.15)',
-                                border: '1px solid rgba(14, 165, 233, 0.4)',
-                                borderRadius: '10px',
-                                padding: '10px 14px',
-                                marginBottom: '1.2rem',
-                                color: '#38bdf8',
-                                fontSize: '0.85rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                gap: '8px'
-                            }}>
-                                <span>🔑 Security Code: <strong style={{letterSpacing: '2px', color: '#fff'}}>{receivedOtpHint}</strong></span>
-                                <button
-                                    type="button"
-                                    onClick={() => setOtp(receivedOtpHint)}
-                                    style={{
-                                        background: '#0ea5e9',
-                                        color: 'white',
-                                        border: 'none',
-                                        borderRadius: '6px',
-                                        padding: '4px 10px',
-                                        cursor: 'pointer',
-                                        fontSize: '0.75rem',
-                                        fontWeight: 800
-                                    }}
-                                >
-                                    Auto-fill
-                                </button>
-                            </div>
-                        )}
 
                         <input 
                             style={styles.otpInput} 
