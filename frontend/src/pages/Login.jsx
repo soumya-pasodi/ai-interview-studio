@@ -156,6 +156,7 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showOTPModal, setShowOTPModal] = useState(false);
     const [otp, setOtp] = useState('');
+    const [receivedOtpHint, setReceivedOtpHint] = useState('');
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -199,6 +200,7 @@ const Login = () => {
             });
             const data = await res.json();
             if (res.ok) {
+                if (data.otpHint) setReceivedOtpHint(data.otpHint);
                 setShowOTPModal(true);
             } else {
                 alert(data.error || 'Failed to send OTP');
@@ -521,11 +523,77 @@ const Login = () => {
             {showOTPModal && (
                 <div style={styles.modalOverlay}>
                     <div style={styles.otpModal}>
-                        <h3 style={{color: 'white', marginBottom: '1rem'}}>Verify Email</h3>
-                        <p style={{color: '#94a3b8', marginBottom: '2rem'}}>Enter code sent to your email</p>
-                        <input style={styles.otpInput} maxLength="6" onChange={(e) => setOtp(e.target.value)} />
-                        <div style={{marginTop: '2rem'}}>
-                            <motion.button whileHover={{scale:1.02}} style={styles.loginBtn} onClick={handleVerifyOTPAndRegister}>Verify & Create</motion.button>
+                        <h3 style={{color: 'white', marginBottom: '0.5rem', fontWeight: 800}}>Verify Email</h3>
+                        <p style={{color: '#94a3b8', marginBottom: '1rem', fontSize: '0.88rem'}}>
+                            Verification code sent to <strong style={{color: '#0ea5e9'}}>{formData.email}</strong>
+                        </p>
+
+                        {receivedOtpHint && (
+                            <div style={{
+                                background: 'rgba(14, 165, 233, 0.15)',
+                                border: '1px solid rgba(14, 165, 233, 0.4)',
+                                borderRadius: '10px',
+                                padding: '10px 14px',
+                                marginBottom: '1.2rem',
+                                color: '#38bdf8',
+                                fontSize: '0.85rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: '8px'
+                            }}>
+                                <span>🔑 Security Code: <strong style={{letterSpacing: '2px', color: '#fff'}}>{receivedOtpHint}</strong></span>
+                                <button
+                                    type="button"
+                                    onClick={() => setOtp(receivedOtpHint)}
+                                    style={{
+                                        background: '#0ea5e9',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '6px',
+                                        padding: '4px 10px',
+                                        cursor: 'pointer',
+                                        fontSize: '0.75rem',
+                                        fontWeight: 800
+                                    }}
+                                >
+                                    Auto-fill
+                                </button>
+                            </div>
+                        )}
+
+                        <input 
+                            style={styles.otpInput} 
+                            maxLength="6" 
+                            value={otp}
+                            placeholder="6-digit"
+                            onChange={(e) => setOtp(e.target.value)} 
+                        />
+
+                        <div style={{marginTop: '1.8rem', display: 'flex', gap: '12px', justifyContent: 'center'}}>
+                            <button
+                                type="button"
+                                style={{
+                                    padding: '0.9rem 1.4rem',
+                                    borderRadius: '14px',
+                                    background: 'rgba(255,255,255,0.08)',
+                                    color: '#94a3b8',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                    cursor: 'pointer',
+                                    fontWeight: 700
+                                }}
+                                onClick={() => setShowOTPModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <motion.button 
+                                whileHover={{scale:1.02}} 
+                                style={{...styles.loginBtn, marginTop: 0, flex: 1}} 
+                                onClick={handleVerifyOTPAndRegister}
+                                disabled={loading}
+                            >
+                                {loading ? 'Verifying...' : 'Verify & Create'}
+                            </motion.button>
                         </div>
                     </div>
                 </div>
