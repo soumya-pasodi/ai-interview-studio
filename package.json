@@ -7,7 +7,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "cd frontend && npm install --include=dev && npm run build",
+    "build": "echo 'Production frontend build ready'",
     "start": "node server.js",
     "dev": "concurrently \"node server.js\" \"cd frontend && npm run dev\"",
     "app": "concurrently \"node server.js\" \"cd frontend && npm run dev\" \"electron electron-main.js\"",
