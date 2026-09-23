@@ -292,38 +292,43 @@ const sendEmail = async (to, subject, htmlBody) => {
 const otpStore = {};
 
 app.post('/api/send-registration-otp', (req, res) => {
-    const { email } = req.body;
+    const rawEmail = req.body.email || '';
+    const email = rawEmail.trim().toLowerCase();
     if (!email) return res.status(400).json({ error: 'Email is required' });
     
-    db.get('SELECT id FROM users WHERE email = ?', [email], (err, existing) => {
+    db.get('SELECT id FROM users WHERE LOWER(email) = LOWER(?)', [email], (err, existing) => {
         if (err) return res.status(500).json({ error: 'Database error' });
         if (existing) return res.status(409).json({ error: 'This email is already registered.' });
         
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         otpStore[email] = { otp, expires: Date.now() + 10 * 60 * 1000 };
+        otpStore[rawEmail] = otpStore[email];
         
         sendEmail(email, "🔑 Validate your AI Interview Studio Account", 
-            `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+            `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;border:1px solid #e2e8f0;border-radius:12px;">
                 <h2 style="color:#6366f1;">Email Validation Required</h2>
-                <p>Your OTP for registration is: <strong style="font-size:24px;color:#0ea5e9;">${otp}</strong></p>
+                <p>Your OTP for registration is: <strong style="font-size:28px;color:#0ea5e9;letter-spacing:4px;">${otp}</strong></p>
                 <p>This OTP will expire in 10 minutes.</p>
             </div>`
         );
-        console.log(`[OTP Simulated for Registration] -> ${email}: ${otp}`);
+        console.log(`[OTP SENT for Registration] -> ${email}: ${otp}`);
         res.status(200).json({ message: 'OTP sent successfully' });
     });
 });
 
 app.post('/api/verify-registration-otp', (req, res) => {
-    const { email, otp } = req.body;
+    const rawEmail = req.body.email || '';
+    const email = rawEmail.trim().toLowerCase();
+    const otp = (req.body.otp || '').trim();
     if (!email || !otp) return res.status(400).json({ error: 'Email and OTP required' });
     
-    const record = otpStore[email];
+    const record = otpStore[email] || otpStore[rawEmail];
     if (!record) return res.status(400).json({ error: 'No OTP requested for this email' });
     if (Date.now() > record.expires) return res.status(400).json({ error: 'OTP expired' });
     if (record.otp !== otp) return res.status(400).json({ error: 'Invalid OTP' });
     
     delete otpStore[email];
+    delete otpStore[rawEmail];
     res.status(200).json({ message: 'Email validated successfully' });
 });
 
