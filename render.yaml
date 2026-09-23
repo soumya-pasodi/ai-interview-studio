@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ai-interview-studio
+    env: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        value: nexus_super_secret_key_2026
+      - key: EMAIL_USER
+        value: admin1soumya@gmail.com
+      - key: EMAIL_APP_PASSWORD
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
