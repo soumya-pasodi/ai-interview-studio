@@ -1,0 +1,159 @@
+{
+    "universities": [
+        {
+            "id": "u1",
+            "name": "Visvesvaraya Technological University (VTU)",
+            "colleges": [
+                "BMS College of Engineering",
+                "Ramaiah Institute of Technology",
+                "PES University",
+                "RV College of Engineering",
+                "Sir M. Visvesvaraya Institute of Technology",
+                "Bangalore Institute of Technology",
+                "Dayananda Sagar College of Engineering",
+                "Nitte Meenakshi Institute of Technology",
+                "SJB Institute of Technology",
+                "New Horizon College of Engineering"
+            ]
+        },
+        {
+            "id": "u2",
+            "name": "Anna University",
+            "colleges": [
+                "College of Engineering, Guindy",
+                "Madras Institute of Technology",
+                "SSN College of Engineering",
+                "PSG College of Technology",
+                "Coimbatore Institute of Technology",
+                "St. Joseph's College of Engineering",
+                "Easwari Engineering College",
+                "Sri Sairam Engineering College",
+                "Rajalakshmi Engineering College",
+                "Velammal Engineering College"
+            ]
+        },
+        {
+            "id": "u3",
+            "name": "Jawaharlal Nehru Technological University (JNTU)",
+            "colleges": [
+                "JNTU College of Engineering, Hyderabad",
+                "CBIT Hyderabad",
+                "VNR Vignana Jyothi Institute of Engineering and Technology",
+                "Vasavi College of Engineering",
+                "Gokaraju Rangaraju Institute of Engineering and Technology",
+                "BVRIT Hyderabad",
+                "MVSR Engineering College",
+                "Keshav Memorial Institute of Technology",
+                "Sreenidhi Institute of Science and Technology",
+                "Geethanjali College of Engineering"
+            ]
+        },
+        {
+            "id": "u4",
+            "name": "Savitribai Phule Pune University",
+            "colleges": [
+                "College of Engineering Pune (COEP)",
+                "Pune Institute of Computer Technology (PICT)",
+                "Vishwakarma Institute of Technology (VIT)",
+                "Cummins College of Engineering for Women",
+                "Maharashtra Institute of Technology (MIT)",
+                "Sinhgad College of Engineering",
+                "D.Y. Patil College of Engineering",
+                "AISSMS College of Engineering",
+                "MIT Academy of Engineering",
+                "Pimpri Chinchwad College of Engineering"
+            ]
+        },
+        {
+            "id": "u5",
+            "name": "University of Mumbai",
+            "colleges": [
+                "Veermata Jijabai Technological Institute (VJTI)",
+                "Sardar Patel Institute of Technology",
+                "K. J. Somaiya College of Engineering",
+                "Dwarkadas J. Sanghvi College of Engineering",
+                "Thadomal Shahani Engineering College",
+                "Fr. Conceicao Rodrigues College of Engineering",
+                "Don Bosco Institute of Technology",
+                "Rajiv Gandhi Institute of Technology",
+                "Vivekanand Education Society's Institute of Technology",
+                "M.H. Saboo Siddik College of Engineering"
+            ]
+        },
+        {
+            "id": "u6",
+            "name": "Dr. A.P.J. Abdul Kalam Technical University (AKTU)",
+            "colleges": [
+                "Institute of Engineering and Technology, Lucknow",
+                "JSS Academy of Technical Education",
+                "Ajay Kumar Garg Engineering College",
+                "Galgotias College of Engineering and Technology",
+                "KIET Group of Institutions",
+                "ABES Engineering College",
+                "GL Bajaj Institute of Technology and Management",
+                "Inderprastha Engineering College",
+                "Krishna Institute of Engineering and Technology",
+                "IMS Engineering College"
+            ]
+        },
+        {
+            "id": "u7",
+            "name": "Guru Gobind Singh Indraprastha University (GGSIPU)",
+            "colleges": [
+                "Maharaja Agrasen Institute of Technology",
+                "Maharaja Surajmal Institute of Technology",
+                "Bharati Vidyapeeth's College of Engineering",
+                "Bhagwan Parshuram Institute of Technology",
+                "Indira Gandhi Delhi Technical University for Women",
+                "Northern India Engineering College",
+                "Amity School of Engineering and Technology",
+                "HMR Institute of Technology and Management",
+                "Guru Tegh Bahadur Institute of Technology"
+            ]
+        },
+        {
+            "id": "u8",
+            "name": "Maulana Abul Kalam Azad University of Technology (MAKAUT)",
+            "colleges": [
+                "Heritage Institute of Technology",
+                "Haldia Institute of Technology",
+                "Techno India Main, Salt Lake",
+                "Institute of Engineering and Management (IEM)",
+                "Netaji Subhash Engineering College",
+                "Narula Institute of Technology",
+                "MCKV Institute of Engineering",
+                "Future Institute of Engineering and Management",
+                "Meghnad Saha Institute of Technology"
+            ]
+        },
+        {
+            "id": "u9",
+            "name": "VIT University",
+            "colleges": [
+                "VIT Vellore Campus",
+                "VIT Chennai Campus",
+                "VIT Bhopal Campus",
+                "VIT Amaravati Campus"
+            ]
+        },
+        {
+            "id": "u10",
+            "name": "SRM Institute of Science and Technology",
+            "colleges": [
+                "SRM Kattankulathur Campus",
+                "SRM Ramapuram Campus",
+                "SRM Vadapalani Campus",
+                "SRM NCR Campus, Ghaziabad"
+            ]
+        },
+        {
+            "id": "u11",
+            "name": "Birla Institute of Technology and Science (BITS)",
+            "colleges": [
+                "BITS Pilani, Pilani Campus",
+                "BITS Pilani, K.K. Birla Goa Campus",
+                "BITS Pilani, Hyderabad Campus"
+            ]
+        }
+    ]
+}

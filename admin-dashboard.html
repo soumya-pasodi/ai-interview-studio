@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Management Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --red: #ef4444;
+            --blue: #3b82f6;
+            --green: #10b981;
+            --yellow: #f59e0b;
+            --dark: #0f172a;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+            --text-dark: #0f172a;
+            --text-gray: #64748b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background-color: var(--bg); display: flex; min-height: 100vh; overflow: hidden; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .brand-badge {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--red);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 1.2rem;
+        }
+
+        .nav-menu { padding: 1.5rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 5px; }
+
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #cbd5e1;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--red);
+        }
+
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: var(--red);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .topbar h1 { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); }
+        
+        .profile-btn {
+            display: flex; align-items: center; gap: 10px;
+            background: white; padding: 6px 15px 6px 6px;
+            border-radius: 30px; border: 1px solid var(--border);
+            font-weight: 600; font-size: 0.9rem;
+        }
+        .avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--dark); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* Views */
+        .view-section { display: none; animation: fadeIn 0.3s ease; }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white; padding: 1.5rem; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .stat-title { font-size: 0.85rem; color: var(--text-gray); font-weight: 600; margin-bottom: 5px; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--text-dark); }
+        .stat-icon { font-size: 1.8rem; }
+
+        /* Content Grid */
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+        .card { background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border); }
+        .card-title { margin-bottom: 1.5rem; font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+
+        .activity-item { display: flex; align-items: center; gap: 15px; padding-bottom: 1rem; border-bottom: 1px solid #f1f5f9; margin-bottom: 1rem;}
+        .activity-time { font-size: 0.8rem; color: var(--text-gray); width: 70px; font-weight: 500; }
+        .activity-text { font-size: 0.9rem; font-weight: 500; }
+
+        /* Table */
+        .table-card { background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+        .table-header { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        .search-box {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg); border: 1px solid var(--border);
+            padding: 8px 15px; border-radius: 8px; width: 300px;
+        }
+        .search-box input { border: none; background: transparent; outline: none; width: 100%; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem 1.5rem; font-size: 0.8rem; text-transform: uppercase; color: var(--text-gray); background: var(--bg); border-bottom: 1px solid var(--border); }
+        td { padding: 1rem 1.5rem; font-size: 0.9rem; border-bottom: 1px solid #f1f5f9; }
+        
+        .status-badge { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-badge">A</div>
+            <div>
+                <div style="font-weight: 800; letter-spacing: 1px; font-size: 1.1rem;">ADMIN PORTAL</div>
+                <div style="font-size: 0.75rem; color: #94a3b8;">Management Center</div>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchView('dashboard', this)">📊 Dashboard Overview</div>
+            <div class="nav-item" onclick="switchView('students', this)">👥 Student Management</div>
+            <div class="nav-item" onclick="switchView('registrations', this)">✅ Pending Registrations</div>
+            <div class="nav-item">🎓 Certificates</div>
+            <div class="nav-item">🧠 Interview Config</div>
+        </div>
+
+        <div class="sidebar-footer" onclick="logout()">
+            🚪 Secure Logout
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="topbar">
+            <h1 id="page-title">Dashboard Overview</h1>
+            <div class="profile-btn">
+                <div class="avatar">SA</div>
+                <span id="admin-name">Super Admin</span>
+            </div>
+        </div>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-section active">
+            <div class="stats-grid">
+                <div class="stat-card" style="border-top: 4px solid var(--blue)">
+                    <div><div class="stat-title">Total Students</div><div class="stat-value" id="stat-students">...</div></div>
+                    <div class="stat-icon">👥</div>
+                </div>
+                <div class="stat-card" style="border-top: 4px solid var(--yellow)">
+                    <div><div class="stat-title">Pending Registrations</div><div class="stat-value">0</div></div>
+                    <div class="stat-icon">✅</div>
+                </div>
+                <div class="stat-card" style="border-top: 4px solid #8b5cf6">
+                    <div><div class="stat-title">Interviews Completed</div><div class="stat-value">0</div></div>
+                    <div class="stat-icon">🧠</div>
+                </div>
+                <div class="stat-card" style="border-top: 4px solid var(--green)">
+                    <div><div class="stat-title">Certificates Issued</div><div class="stat-value">0</div></div>
+                    <div class="stat-icon">🎓</div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <h3 class="card-title">Recent Audit Log</h3>
+                    <div class="activity-item">
+                        <div class="activity-time">Just Now</div>
+                        <div class="activity-text" style="color: var(--blue)">Admin accessed secure dashboard</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">10:45 AM</div>
+                        <div class="activity-text" style="color: var(--yellow)">Certificate module synchronized</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-time">09:00 AM</div>
+                        <div class="activity-text" style="color: var(--green)">System backup completed successfully</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDENTS VIEW -->
+        <div id="view-students" class="view-section">
+            <div class="table-card">
+                <div class="table-header">
+                    <h3 class="card-title" style="margin: 0;">All Registered Students</h3>
+                    <div class="search-box">
+                        🔍 <input type="text" placeholder="Search students..." onkeyup="filterTable(this.value)">
+                    </div>
+                </div>
+                
+                <table id="students-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Student Name</th>
+                            <th>Username</th>
+                            <th>Email Address</th>
+                            <th>University</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- REGISTRATIONS VIEW -->
+        <div id="view-registrations" class="view-section">
+            <div class="card" style="text-align: center; padding: 5rem 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">✅</div>
+                <h3 style="color: var(--text-gray);">No Pending Registrations</h3>
+                <p style="color: #94a3b8; margin-top: 10px;">All student accounts have been processed by the system.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check auth
+        if (!localStorage.getItem('admin_token')) {
+            window.location.href = 'admin-login.html';
+        }
+        document.getElementById('admin-name').textContent = localStorage.getItem('admin_username') || 'Admin';
+
+        function logout() {
+            localStorage.removeItem('admin_token');
+            localStorage.removeItem('admin_username');
+            window.location.href = 'admin-login.html';
+        }
+
+        function switchView(viewName, element) {
+            document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+            element.classList.add('active');
+            
+            document.querySelectorAll('.view-section').forEach(e => e.classList.remove('active'));
+            document.getElementById('view-' + viewName).classList.add('active');
+            
+            const titles = {
+                'dashboard': 'Dashboard Overview',
+                'students': 'Student Management',
+                'registrations': 'Pending Registrations'
+            };
+            document.getElementById('page-title').textContent = titles[viewName];
+        }
+
+        async function fetchData() {
+            try {
+                // Fetch Stats
+                const statsRes = await fetch('/api/admin/stats');
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    document.getElementById('stat-students').textContent = stats.totalStudents;
+                }
+
+                // Fetch Students
+                const stdRes = await fetch('/api/admin/students');
+                if (stdRes.ok) {
+                    const data = await stdRes.json();
+                    const tbody = document.getElementById('students-body');
+                    tbody.innerHTML = '';
+                    
+                    data.students.forEach(student => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>#${student.id}</td>
+                            <td style="font-weight: 600; color: var(--text-dark);">${student.firstName || ''} ${student.lastName || ''}</td>
+                            <td>${student.username}</td>
+                            <td>${student.email}</td>
+                            <td>${student.university || 'N/A'}</td>
+                            <td><span class="status-badge">Active</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to load data', err);
+            }
+        }
+
+        function filterTable(query) {
+            query = query.toLowerCase();
+            const rows = document.getElementById('students-body').getElementsByTagName('tr');
+            for (let row of rows) {
+                row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+            }
+        }
+
+        // Load data on start
+        fetchData();
+    </script>
+</body>
+</html>

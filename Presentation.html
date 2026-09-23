@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Studio - Presentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h2 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-top: 40px;
+            color: #2980b9;
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        ul {
+            margin-bottom: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .mermaid {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .section-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AI Interview Studio<br>Project Presentation</h1>
+
+    <div class="section-box">
+        <h2>1. Introduction</h2>
+        <p>In today's highly competitive job market, candidates often struggle with technical interviews due to anxiety, lack of preparation, and limited access to professional feedback. <strong>AI Interview Studio</strong> is a comprehensive, AI-powered platform designed to simulate real-world technical interviews and coding assessments.</p>
+        <p>By leveraging advanced Artificial Intelligence (LLMs), real-time face tracking, and voice activity detection, the platform offers an immersive and proctored environment. It evaluates a candidate's technical knowledge, coding proficiency, and behavioral traits, providing instant, actionable feedback to bridge the gap between academic learning and industry expectations.</p>
+    </div>
+
+    <div class="section-box">
+        <h2>2. Purpose and Uniqueness of the Project</h2>
+        <h3>Purpose</h3>
+        <ul>
+            <li>To democratize access to high-quality mock interviews without the need for human interviewers.</li>
+            <li>To provide an objective, scalable, and secure assessment platform for academic institutions and enterprises.</li>
+            <li>To help candidates identify their strengths and weaknesses through detailed performance analytics.</li>
+        </ul>
+        
+        <h3>Uniqueness</h3>
+        <ul>
+            <li><strong>Context-Aware AI:</strong> Adaptive questioning that changes based on the candidate's previous answers, preventing rote memorization.</li>
+            <li><strong>Multi-Modal Proctoring:</strong> Integrated vision (Face-API.js) and audio (VAD) analysis to ensure academic integrity in real-time.</li>
+            <li><strong>Unified Coding & Chat:</strong> Seamless transition between conversational technical questions and hands-on coding challenges in a built-in IDE.</li>
+            <li><strong>Instant Analytics:</strong> Comprehensive reports generated immediately after the session, highlighting exact areas of improvement.</li>
+        </ul>
+    </div>
+
+    <div class="section-box page-break">
+        <h2>3. Methodology</h2>
+        <p>The development of AI Interview Studio followed an iterative, Agile methodology focusing on user-centric design and robust system architecture:</p>
+        <ul>
+            <li><strong>Requirement Analysis:</strong> Identified the key challenges faced by students and recruiters during remote assessments.</li>
+            <li><strong>Design & Prototyping:</strong> Created a highly engaging, glassmorphism-based UI/UX to reduce user cognitive load and anxiety.</li>
+            <li><strong>AI Integration:</strong> Utilized OpenRouter for connecting to state-of-the-art LLMs (like GPT-4o) to dynamically generate context-specific questions and grade responses based on semantic meaning.</li>
+            <li><strong>Security Implementation:</strong> Developed a client-side proctoring layer that continuously monitors webcam feeds for multiple faces or absence, and listens for suspicious audio activities.</li>
+            <li><strong>Testing & Refinement:</strong> Conducted rigorous module testing on the CodeMirror IDE execution and AI response latency, ensuring real-time performance.</li>
+        </ul>
+    </div>
+
+    <div class="section-box">
+        <h2>4. Architecture Flow of the Project</h2>
+        <p>The system operates on a sophisticated modular architecture divided into three primary layers:</p>
+        <ul>
+            <li><strong>Presentation Layer (Client):</strong> Built with React and Framer Motion, it houses the user dashboard, code editor, and the proctoring overlay. It handles all user interactions and captures raw media streams.</li>
+            <li><strong>Intelligence Engine (Edge/Cloud):</strong> Processes the video and audio streams locally using Face-API.js to ensure privacy and low latency. It communicates with the cloud LLM via secure API endpoints for cognitive tasks.</li>
+            <li><strong>Logic & Data Layer (Server):</strong> A Node.js/Express backend manages session states, validates authentication tokens, orchestrates AI requests, and persists performance metrics into an SQLite database for dashboard retrieval.</li>
+        </ul>
+    </div>
+
+    <div class="section-box page-break">
+        <h2>5. Flow Diagram</h2>
+        <p>The following diagram illustrates the complete user journey and system interaction from session initiation to result generation.</p>
+        
+        <div class="mermaid">
+            graph TD
+                A([Candidate Login]) --> B[Dashboard]
+                B --> C{Initiate Assessment}
+                
+                C --> D[Hardware Setup & Proctoring Check]
+                D --> E{Integrity Verified?}
+                
+                E -->|No| D
+                E -->|Yes| F[AI Interview Engine Starts]
+                
+                F --> G[Adaptive Question Generation]
+                G --> H[Candidate Responds via Text/Code/Voice]
+                
+                H --> I[Continuous Proctoring Monitoring]
+                I -.->|Violation Detected| J[Warning / Auto-Submit]
+                
+                I --> K[AI Semantic Evaluator]
+                K -->|More Questions Needed| G
+                
+                K -->|Session Completed| L[Compile Analytics]
+                L --> M([Generate Final Performance Report])
+        </div>
+    </div>
+
+    <div class="section-box">
+        <h2>6. Conclusion</h2>
+        <p>The <strong>AI Interview Studio</strong> successfully demonstrates the immense potential of integrating AI into the recruitment and academic assessment workflows. By combining an intuitive interface with strict proctoring mechanisms and intelligent, adaptive evaluations, the platform not only streamlines the technical interview process but also makes it fairer and more insightful.</p>
+        <p>Moving forward, the system is primed for further scalability, with potential expansions into fully voice-conversational avatars and support for multi-language coding environments. It stands as a robust solution to the modern challenges of remote skill validation.</p>
+    </div>
+
+    <!-- Include Mermaid from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>

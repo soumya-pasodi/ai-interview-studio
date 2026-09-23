@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Technical Interview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --text-gray: #94a3b8;
+            --accent: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                linear-gradient(rgba(2, 6, 23, 0.4), rgba(2, 6, 23, 0.6)),
+                url('assets/bg_interview.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon svg { width: 20px; height: 20px; color: white; }
+
+        .domain-badge {
+            background: rgba(14, 165, 233, 0.2);
+            color: var(--accent);
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .container {
+            flex: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Status & Progress */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .question-counter {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .quit-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .quit-btn:hover { background: rgba(239, 68, 68, 0.2); }
+
+        /* Question Box */
+        .question-box {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+            animation: slideIn 0.5s ease;
+        }
+
+        .ai-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-label span {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            line-height: 1.6;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Evaluation Box (Hidden initially) */
+        .evaluation-box {
+            display: none;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: slideIn 0.5s ease;
+        }
+
+        .eval-title {
+            color: var(--success);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .eval-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .eval-item strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: white;
+        }
+
+        .eval-item span { color: var(--text-gray); line-height: 1.5; }
+        
+        .score-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--success);
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        /* Answer Area */
+        .answer-area {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .answer-area label {
+            display: block;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            min-height: 120px;
+            outline: none;
+        }
+
+        textarea::placeholder { color: rgba(255,255,255,0.2); }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .btn-mic {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-mic:hover { background: rgba(255, 255, 255, 0.1); }
+        .btn-mic.recording {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+            color: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(79,70,229,0.4); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .btn-next {
+            display: none;
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        .btn-next:hover { transform: translateY(-2px); }
+
+        /* Loading */
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+        
+        .loading span {
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loading span:nth-child(1) { animation-delay: -0.32s; }
+        .loading span:nth-child(2) { animation-delay: -0.16s; }
+        
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Final Summary Box */
+        .summary-box {
+            display: none;
+            text-align: center;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+        }
+
+        .summary-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-logo">
+            <div class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+            </div>
+            <span class="nav-title">AI Interviewer</span>
+        </div>
+        <div class="domain-badge" id="domain-badge">Loading Domain...</div>
+    </nav>
+
+    <div class="container">
+        
+        <!-- Summary Box -->
+        <div class="summary-box" id="summary-section">
+            <h2>Interview Complete</h2>
+            <br>
+            <h1 id="final-score" style="font-size: 4rem; color: var(--success); margin-bottom: 1rem;">0%</h1>
+            <p id="final-stats" style="color: var(--text-gray); font-size: 1.25rem; margin-bottom: 2rem;"></p>
+            <p id="final-performance" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 2.5rem; color: white;"></p>
+            <button class="btn-submit" onclick="window.location.href='dashboard.html'" style="font-size: 1.1rem; padding: 1rem 3rem;">Return to Dashboard</button>
+        </div>
+
+        <div id="interview-section">
+            <div class="status-bar">
+                <div class="question-counter">Question <span id="current-q-num">1</span> of 15</div>
+                <div class="timer" id="question-timer" style="font-size: 1.25rem; font-weight: 700; color: var(--warning); display: flex; align-items: center; gap: 0.5rem;">⏱️ 02:00</div>
+                <button class="quit-btn" onclick="quitInterview()">Pause & Save</button>
+            </div>
+
+            <!-- Loader for Question -->
+            <div class="loading" id="q-loader" style="margin-bottom: 2rem; display: flex;">
+                <div class="spinner"></div> Generating next technical question...
+            </div>
+
+            <!-- Question Area -->
+            <div class="question-box" id="question-container" style="display: none;">
+                <div class="ai-label"><span></span> AI Interviewer</div>
+                <div class="question-text" id="question-text">
+                    // Question text will appear here
+                </div>
+            </div>
+
+            <!-- Evaluation Area -->
+            <div class="evaluation-box" id="evaluation-container">
+                <div class="eval-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    AI Evaluation Feedback
+                </div>
+                <div class="score-display" id="eval-score">Score: -/10</div>
+                <div class="eval-grid">
+                    <div class="eval-item"><strong>Strengths:</strong> <span id="eval-strength">...</span></div>
+                    <div class="eval-item"><strong>Missing Points:</strong> <span id="eval-missing">...</span></div>
+                    <div class="eval-item"><strong>Suggestions:</strong> <span id="eval-suggestion">...</span></div>
+                </div>
+                <button class="btn-next" id="btn-next" onclick="nextQuestion()" style="display: block;">Next Question →</button>
+            </div>
+
+            <!-- Input Area -->
+            <div class="answer-area" id="answer-container">
+                <label>Your Answer</label>
+                <textarea id="answer-input" placeholder="Type your answer here, or click the mic to speak..."></textarea>
+                
+                <div class="controls">
+                    <button class="btn-mic" id="btn-mic" onclick="toggleSpeech()" title="Use Microphone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </button>
+                    
+                    <div class="loading" id="eval-loader">
+                        <div class="spinner" style="width: 18px; height: 18px; border-width: 2px;"></div> Analyzing answer...
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="quit-btn" style="color: var(--warning); border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.1);" onclick="skipQuestion()" id="btn-skip">Skip for Later</button>
+                        <button class="btn-submit" id="btn-submit" onclick="submitAnswer()">Submit Answer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MAX_QUESTIONS = 15;
+        let currentQuestionNum = 1;
+        let currentDomain = "";
+        let askedQuestions = [];
+        let currentQuestionText = "";
+        let totalScore = 0;
+        let allStrengths = [];
+        let allWeaknesses = [];
+        
+        // Timer & Skip Variables
+        let timerInterval = null;
+        let timeRemaining = 120; // 2 mins
+        let skippedQuestions = [];
+        let interviewId = "id_" + Date.now();
+        let isAnsweringSkipped = false;
+        
+        // Speech Recognition setup
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isRecording = false;
+
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    }
+                }
+                if (finalTranscript) {
+                    const input = document.getElementById('answer-input');
+                    input.value += (input.value.endsWith(' ') || input.value === '' ? '' : ' ') + finalTranscript;
+                }
+            };
+            
+            recognition.onerror = (e) => {
+                console.error("Speech Recognition Error", e);
+                stopSpeech();
+            };
+        }
+
+        // Initialize Page
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const resumeId = urlParams.get('resume_id');
+            
+            if (resumeId) {
+                const inc = JSON.parse(localStorage.getItem('ai_portal_incomplete_interviews')) || [];
+                const savedState = inc.find(i => i.id === resumeId);
+                if (savedState) {
+                    currentDomain = savedState.domain;
+                    currentQuestionNum = savedState.currentQuestionNum;
+                    askedQuestions = savedState.askedQuestions || [];
+                    totalScore = savedState.totalScore || 0;
+                    allStrengths = savedState.allStrengths || [];
+                    allWeaknesses = savedState.allWeaknesses || [];
+                    skippedQuestions = savedState.skippedQuestions || [];
+                    interviewId = savedState.id;
+                } else {
+                    currentDomain = urlParams.get('domain') || 'General';
+                }
+            } else {
+                currentDomain = urlParams.get('domain') || 'General Software Engineering';
+            }
+            
+            document.getElementById('domain-badge').textContent = currentDomain.toUpperCase();
+            document.getElementById('current-q-num').textContent = currentQuestionNum;
+            
+            fetchNextQuestion();
+        });
+
+        // Toggle Speech Recognition
+        function toggleSpeech() {
+            if(!recognition) {
+                alert("Speech Recognition is not supported in this browser. Please use Chrome.");
+                return;
+            }
+
+            const micBtn = document.getElementById('btn-mic');
+            if(isRecording) {
+                stopSpeech();
+            } else {
+                recognition.start();
+                micBtn.classList.add('recording');
+                isRecording = true;
+            }
+        }
+
+        function stopSpeech() {
+            if(recognition && isRecording) {
+                recognition.stop();
+                document.getElementById('btn-mic').classList.remove('recording');
+                isRecording = false;
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = 120;
+            updateTimerUI();
+            
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerUI();
+                if(timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('answer-input').value = document.getElementById('answer-input').value || "No answer provided within time limit.";
+                    submitAnswer();
+                }
+            }, 1000);
+        }
+
+        function updateTimerUI() {
+            const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+            const s = (timeRemaining % 60).toString().padStart(2, '0');
+            const timerEl = document.getElementById('question-timer');
+            timerEl.textContent = `⏱️ ${m}:${s}`;
+            if(timeRemaining <= 30) timerEl.style.color = 'var(--danger)';
+            else timerEl.style.color = 'var(--warning)';
+        }
+
+        async function fetchNextQuestion() {
+            document.getElementById('q-loader').style.display = 'flex';
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('evaluation-container').style.display = 'none';
+            document.getElementById('answer-container').style.display = 'block';
+            document.getElementById('answer-input').value = '';
+            document.getElementById('btn-submit').disabled = true;
+            document.getElementById('btn-skip').style.display = 'inline-block';
+            
+            clearInterval(timerInterval);
+
+            // Handle skipped questions phase
+            if (currentQuestionNum > MAX_QUESTIONS && skippedQuestions.length > 0) {
+                isAnsweringSkipped = true;
+                document.getElementById('current-q-num').textContent = `Skipped (${skippedQuestions.length} left)`;
+                currentQuestionText = skippedQuestions.shift();
+                document.getElementById('question-text').textContent = currentQuestionText;
+                document.getElementById('btn-skip').style.display = 'none'; // Cant skip twice
+                
+                speakText(currentQuestionText);
+                document.getElementById('q-loader').style.display = 'none';
+                document.getElementById('question-container').style.display = 'block';
+                document.getElementById('btn-submit').disabled = false;
+                startTimer();
+                return;
+            } else if (currentQuestionNum > MAX_QUESTIONS && skippedQuestions.length === 0) {
+                showSummary();
+                return;
+            }
+
+            let level = currentQuestionNum > 3 ? 'hard' : (currentQuestionNum > 1 ? 'medium' : 'easy');
+
+            try {
+                const response = await fetch('/api/generate_question', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        domain: currentDomain,
+                        level: level,
+                        askedQuestions: askedQuestions
+                    })
+                });
+
+                if(response.ok) {
+                    const data = await response.json();
+                    currentQuestionText = data.question;
+                    askedQuestions.push(currentQuestionText);
+                    
+                    document.getElementById('question-text').textContent = currentQuestionText;
+                    
+                    // Simple text-to-speech for the question
+                    speakText(currentQuestionText);
+
+                    document.getElementById('q-loader').style.display = 'none';
+                    document.getElementById('question-container').style.display = 'block';
+                    document.getElementById('btn-submit').disabled = false;
+                    startTimer();
+                } else {
+                    document.getElementById('question-text').textContent = "Failed to load question. Please try again.";
+                    document.getElementById('q-loader').style.display = 'none';
+                    document.getElementById('question-container').style.display = 'block';
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Network error. Make sure your local node server is running.");
+            }
+        }
+
+        function skipQuestion() {
+            clearInterval(timerInterval);
+            skippedQuestions.push(currentQuestionText);
+            
+            currentQuestionNum++;
+            document.getElementById('current-q-num').textContent = currentQuestionNum;
+            
+            if(currentQuestionNum > MAX_QUESTIONS && skippedQuestions.length === 0) {
+                showSummary();
+            } else {
+                fetchNextQuestion();
+            }
+        }
+
+        async function submitAnswer() {
+            clearInterval(timerInterval);
+            stopSpeech();
+            const answer = document.getElementById('answer-input').value.trim();
+            if(!answer && timeRemaining > 0) {
+                alert("Please provide an answer before submitting.");
+                startTimer(); // resume timer
+                return;
+            }
+
+            document.getElementById('btn-submit').style.display = 'none';
+            document.getElementById('btn-skip').style.display = 'none';
+            document.getElementById('eval-loader').style.display = 'flex';
+            document.getElementById('answer-input').disabled = true;
+
+            try {
+                const response = await fetch('/api/evaluate_answer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        question: currentQuestionText,
+                        answer: answer
+                    })
+                });
+
+                if(response.ok) {
+                    const data = await response.json();
+                    parseEvaluation(data.evaluation);
+                    
+                    document.getElementById('evaluation-container').style.display = 'block';
+                    document.getElementById('answer-container').style.display = 'none';
+                } else {
+                    alert("Evaluation failed. Please try again.");
+                    document.getElementById('btn-submit').style.display = 'block';
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Network error during evaluation.");
+                document.getElementById('btn-submit').style.display = 'block';
+            } finally {
+                document.getElementById('eval-loader').style.display = 'none';
+                document.getElementById('answer-input').disabled = false;
+            }
+        }
+
+        function parseEvaluation(text) {
+            // Expected format:
+            let scoreStr = "--/10";
+            let strength = "Parsed from AI";
+            let missing = "Parsed from AI";
+            let suggestion = "Parsed from AI";
+            
+            let tScore = 0, cScore = 0, qScore = 0;
+
+            const lines = text.split('\n');
+            for(let line of lines) {
+                let l = line.trim();
+                if(l.toLowerCase().startsWith('technical score:')) {
+                    scoreStr = l.substring(16).trim();
+                    let num = parseInt(scoreStr.split('/')[0]);
+                    if(!isNaN(num)) tScore = num;
+                }
+                else if(l.toLowerCase().startsWith('communication score:')) {
+                    let num = parseInt(l.substring(20).trim().split('/')[0]);
+                    if(!isNaN(num)) cScore = num;
+                }
+                else if(l.toLowerCase().startsWith('answer quality:')) {
+                    let num = parseInt(l.substring(15).trim().split('/')[0]);
+                    if(!isNaN(num)) qScore = num;
+                }
+                else if(l.toLowerCase().startsWith('strength:')) strength = l.substring(9).trim();
+                else if(l.toLowerCase().startsWith('missing:')) missing = l.substring(8).trim();
+                else if(l.toLowerCase().startsWith('suggestion:')) suggestion = l.substring(11).trim();
+            }
+            
+            let avgScore = Math.round((tScore + cScore + qScore) / 3);
+            if (isNaN(avgScore)) avgScore = 0;
+            totalScore += avgScore;
+
+            if(strength !== "Parsed from AI") allStrengths.push(strength);
+            if(missing !== "Parsed from AI") allWeaknesses.push(missing);
+
+            document.getElementById('eval-score').textContent = `Technical: ${tScore}/10 | Communication: ${cScore}/10`;
+            document.getElementById('eval-strength').textContent = strength;
+            document.getElementById('eval-missing').textContent = missing;
+            document.getElementById('eval-suggestion').textContent = suggestion;
+            
+            if(!isAnsweringSkipped) {
+                if(currentQuestionNum >= MAX_QUESTIONS && skippedQuestions.length === 0) {
+                    document.getElementById('btn-next').textContent = "Finish Interview & Check Results";
+                    document.getElementById('btn-next').onclick = showSummary;
+                } else if(currentQuestionNum >= MAX_QUESTIONS && skippedQuestions.length > 0) {
+                    document.getElementById('btn-next').textContent = "Proceed to Skipped Questions ->";
+                }
+            } else {
+                if(skippedQuestions.length === 0) {
+                    document.getElementById('btn-next').textContent = "Finish Interview & Check Results";
+                    document.getElementById('btn-next').onclick = showSummary;
+                }
+            }
+        }
+
+        function nextQuestion() {
+            if(!isAnsweringSkipped) {
+                currentQuestionNum++;
+                document.getElementById('current-q-num').textContent = currentQuestionNum <= MAX_QUESTIONS ? currentQuestionNum : `Skipped (${skippedQuestions.length} left)`;
+            }
+            document.getElementById('btn-submit').style.display = 'block';
+            fetchNextQuestion();
+        }
+
+        function showSummary() {
+            document.getElementById('interview-section').style.display = 'none';
+            document.getElementById('summary-section').style.display = 'block';
+
+            let avgScore = (totalScore / MAX_QUESTIONS).toFixed(1);
+            let percentage = (avgScore / 10) * 100;
+            
+            document.getElementById('final-score').textContent = `${percentage.toFixed(0)}%`;
+            document.getElementById('final-stats').textContent = `You scored ${totalScore} out of ${MAX_QUESTIONS * 10} total points across ${MAX_QUESTIONS} questions. Average: ${avgScore}/10.`;
+
+            let perf = "Needs Improvement";
+            let color = "var(--danger)";
+            if(avgScore >= 8) { perf = "Excellent Candidate 🌟"; color = "var(--success)"; }
+            else if(avgScore >= 6) { perf = "Good Solid Performance 👍"; color = "var(--primary)"; }
+            else if(avgScore >= 4) { perf = "Average Performance 😐"; color = "var(--warning)"; }
+
+            const perfElem = document.getElementById('final-performance');
+            perfElem.textContent = `Verdict: ${perf}`;
+            perfElem.style.color = color;
+
+            // Clear from incomplete lists if it somehow existed
+            const inc = JSON.parse(localStorage.getItem('ai_portal_incomplete_interviews')) || [];
+            const filteredInc = inc.filter(i => i.id !== interviewId);
+            localStorage.setItem('ai_portal_incomplete_interviews', JSON.stringify(filteredInc));
+
+            // Save the report to the history array
+            const todayDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            
+            let sPoints = [...new Set(allStrengths)].slice(0, 3);
+            let wPoints = [...new Set(allWeaknesses)].slice(0, 3);
+            if(sPoints.length === 0) sPoints = ["Successfully attempted technical questions"];
+            if(wPoints.length === 0) wPoints = ["Review more theoretical concepts globally"];
+
+            let history = JSON.parse(localStorage.getItem('ai_portal_interviews')) || [];
+            
+            const newRecord = {
+                domain: currentDomain,
+                score: avgScore,
+                percentage: percentage.toFixed(0),
+                date: todayDate,
+                duration: "20 mins",
+                strengths: sPoints,
+                weaknesses: wPoints
+            };
+            
+            history.unshift(newRecord);
+            localStorage.setItem('ai_portal_interviews', JSON.stringify(history));
+        }
+
+        function quitInterview() {
+            if(confirm("Do you want to pause and save this interview? You can resume it later from the Performance section.")) {
+                clearInterval(timerInterval);
+                const inc = JSON.parse(localStorage.getItem('ai_portal_incomplete_interviews')) || [];
+                
+                const filtered = inc.filter(i => i.id !== interviewId);
+                filtered.unshift({
+                    id: interviewId,
+                    domain: currentDomain,
+                    currentQuestionNum: currentQuestionNum > MAX_QUESTIONS ? MAX_QUESTIONS : currentQuestionNum,
+                    totalScore: totalScore,
+                    askedQuestions: askedQuestions,
+                    skippedQuestions: skippedQuestions,
+                    allStrengths: allStrengths,
+                    allWeaknesses: allWeaknesses,
+                    date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                });
+                
+                localStorage.setItem('ai_portal_incomplete_interviews', JSON.stringify(filtered));
+                window.location.href = 'performance.html';
+            }
+        }
+
+        // Native Browser TTS
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // stop current if any
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Portal - Student Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --purple: #a855f7;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --text-gray: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient Grid Background */
+        .grid-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+        }
+
+        .glow-orb-1 {
+            position: absolute;
+            width: 800px; height: 800px;
+            background: radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 60%);
+            top: -200px; left: -200px;
+            z-index: 0;
+            animation: pulse 4s infinite alternate;
+        }
+        
+        .glow-orb-2 {
+            position: absolute;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 60%);
+            bottom: -100px; right: 30%;
+            z-index: 0;
+            animation: pulse 5s infinite alternate-reverse;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Container Split */
+        .wrapper {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            z-index: 10;
+        }
+
+        /* --- LEFT PANEL --- */
+        .left-panel {
+            flex: 1.8;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .super-title {
+            color: var(--primary);
+            font-size: 1rem;
+            letter-spacing: 0.4em;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(14,165,233,0.8);
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 2.6rem;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #0ea5e9, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sub-title {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .center-visual {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        /* AI Brain Animation */
+        .brain-container {
+            position: relative;
+            width: 350px;
+            height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brain-ring-1 {
+            position: absolute;
+            width: 300px; height: 300px;
+            border: 2px dashed rgba(14,165,233,0.4);
+            border-radius: 50%;
+            animation: spin 30s linear infinite;
+        }
+
+        .brain-ring-2 {
+            position: absolute;
+            width: 250px; height: 250px;
+            border: 1px solid rgba(168,85,247,0.3);
+            border-radius: 50%;
+            animation: spin-reverse 20s linear infinite;
+        }
+
+        .brain-core {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, #0ea5e9, transparent);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: throb 2s infinite alternate;
+        }
+
+        .brain-text {
+            position: absolute;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            background: rgba(2,6,23,0.9);
+            padding: 10px 30px;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(14,165,233,0.6);
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+        @keyframes throb { 100% { transform: scale(1.2); opacity: 0.7; } }
+
+        /* Left Features */
+        .feature-card {
+            background: rgba(15,23,42,0.5);
+            border: 1px solid rgba(14,165,233,0.2);
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateX(10px);
+            background: rgba(15,23,42,0.8);
+            box-shadow: 0 0 20px rgba(14,165,233,0.3);
+        }
+
+        .feature-icon {
+            background: rgba(14,165,233,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            color: var(--primary);
+        }
+
+        /* --- RIGHT PANEL --- */
+        .right-panel {
+            flex: 1;
+            min-width: 450px;
+            max-width: 550px;
+            background: rgba(4,9,20,0.85);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem;
+            box-shadow: -20px 0 50px rgba(0,0,0,0.5);
+        }
+
+        .auth-card {
+            width: 100%;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-circle {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            background: rgba(14,165,233,0.1);
+            border: 1px solid rgba(14,165,233,0.4);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(14,165,233,0.3);
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #0a0f1d;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 1rem 1rem 1rem 1rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(14,165,233,0.3);
+            background: rgba(14,165,233,0.05);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--purple));
+            color: white;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 25px rgba(14,165,233,0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(14,165,233,0.5);
+        }
+
+        .tabs {
+            display: flex;
+            background: #0a0f1d;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-gray);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: rgba(14,165,233,0.15);
+            color: var(--primary);
+        }
+
+        form { display: none; }
+        form.active { display: block; animation: slideIn 0.3s ease; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1000px) {
+            .left-panel { display: none; }
+            .right-panel { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+    <div class="glow-orb-1"></div>
+    <div class="glow-orb-2"></div>
+
+    <div class="wrapper">
+        <!-- PURE HTML/CSS LEFT PANEL (REPLACING THE IMAGE) -->
+        <div class="left-panel">
+            <h3 class="super-title">AI POWERED</h3>
+            <h1 class="main-title">
+                <span class="gradient-text">HOLISTIC INTERVIEW</span><br>
+                AND PERSONAL DEVELOPMENT<br>
+                INTELLIGENCE SYSTEM
+            </h1>
+            <p class="sub-title">Analyze &bull; Evaluate &bull; Improve &bull; Succeed</p>
+
+            <div class="center-visual">
+                <div style="flex: 1;">
+                    <div class="feature-card">
+                        <div class="feature-icon">👤</div>
+                        <div>
+                            <div style="font-weight: 800; color: white;">AI INTERVIEW</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">Smart Interviewer</div>
+                        </div>
+                    </div>
+                    <div class="feature-card" style="border-left-color: var(--purple);">
+                        <div class="feature-icon" style="color: var(--purple);">📄</div>
+                        <div>
+                            <div style="font-weight: 800; color: white;">RESUME ANALYZER</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">Intelligent Screening</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="brain-container">
+                    <div class="brain-ring-1"></div>
+                    <div class="brain-ring-2"></div>
+                    <div class="brain-core"></div>
+                    <div class="brain-text">✨ AI</div>
+                </div>
+
+                <div style="flex: 1; display: flex; flex-direction: column; align-items: flex-end;">
+                    <div class="feature-card" style="border-left-color: #f97316;">
+                        <div class="feature-icon" style="color: #f97316;">📈</div>
+                        <div>
+                            <div style="font-weight: 800; color: white;">SKILL DEVELOPMENT</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">Personalized Learning</div>
+                        </div>
+                    </div>
+                    <div class="feature-card" style="border-left-color: #2dd4bf;">
+                        <div class="feature-icon" style="color: #2dd4bf;">📊</div>
+                        <div>
+                            <div style="font-weight: 800; color: white;">INSIGHTS</div>
+                            <div style="font-size: 0.8rem; color: var(--text-gray);">Data Driven Growth</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL LOGIN FORM -->
+        <div class="right-panel">
+            <div class="auth-card">
+                <div class="card-header">
+                    <div class="logo-circle">
+                        <span style="font-size: 2rem;">🧠</span>
+                    </div>
+                    <h2 style="font-size: 1.5rem; font-weight: 900; color: white;">AI INTERVIEW <span class="gradient-text">STUDIO</span></h2>
+                    <p style="color: var(--text-gray); margin-top: 5px; font-weight: 600;">Smart Interviews | Stronger You</p>
+                </div>
+
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('login')">Login</div>
+                    <div class="tab" onclick="switchTab('register')">Register</div>
+                </div>
+
+                <form id="login-form" class="active" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <input type="text" id="login-username" placeholder="Username or Email" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-submit">LOGIN NOW</button>
+                </form>
+
+                <form id="register-form" onsubmit="handleRegister(event)">
+                    <div class="input-group">
+                        <input type="email" id="reg-email" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="reg-username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-password" placeholder="Password" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="reg-confirm" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn-submit">CREATE ACCOUNT</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('form').forEach(f => f.classList.remove('active'));
+            document.getElementById(`${tab}-form`).classList.add('active');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            btn.textContent = 'Authenticating...';
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('ai_portal_username', data.username);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.error || 'Login failed');
+                }
+            } catch (error) {
+                alert('Error connecting to Server');
+            } finally {
+                btn.textContent = originalText;
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('reg-email').value;
+            const username = document.getElementById('reg-username').value;
+            const pass = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            
+            if(pass !== confirm) { alert('Passwords do not match!'); return; }
+            
+            const btn = e.target.querySelector('button');
+            const originalText = btn.textContent;
+            btn.textContent = 'Creating...';
+            
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, username, password: pass })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Account Created successfully!');
+                    switchTab('login');
+                } else {
+                    alert(data.error || 'Registration failed');
+                }
+            } catch (error) {
+                alert('Error connecting to Server');
+            } finally {
+                btn.textContent = originalText;
+            }
+        }
+    </script>
+</body>
+</html>

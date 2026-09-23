@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - AI Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --dark: #0f172a;
+            --darker: #020617;
+            --light: #f8fafc;
+            --text-gray: #94a3b8;
+            --accent: #0ea5e9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(2, 6, 23, 0.4), rgba(2, 6, 23, 0.6)),
+                url('assets/bg_dashboard.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 3rem;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .nav-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+
+        .nav-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #fff, var(--text-gray));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .action-link {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .action-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            width: 100%;
+            animation: fadeIn 0.8s ease backwards;
+        }
+
+        .header-section {
+            margin-bottom: 3rem;
+        }
+
+        .header-section h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-section p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        .profile-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+            z-index: 0;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .profile-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .profile-info p {
+            color: var(--text-gray);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        .input-group input, .input-group select {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(0,0,0,0.4);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-tag {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-tag button {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .skill-tag button:hover {
+            color: #ef4444;
+        }
+
+        .resume-upload {
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .resume-upload:hover {
+            border-color: var(--primary);
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .resume-upload p {
+            color: var(--text-gray);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 2rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.5);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-logo">
+            <div class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <span class="nav-title">AI Portal</span>
+        </a>
+        <div class="nav-profile">
+            <a href="dashboard.html" class="action-link">Dashboard</a>
+            <a href="index.html" class="action-link" onclick="logout()">Sign Out</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h1>Student Profile</h1>
+            <p>Manage your personal details, skills, and resume.</p>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-content">
+                
+                <div class="profile-header">
+                    <div class="avatar" id="avatar-initials">ST</div>
+                    <div class="profile-info">
+                        <h2 id="display-name">Student User</h2>
+                        <p id="display-email">student@example.com</p>
+                        <span class="badge">Active Candidate</span>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Full Name</label>
+                        <input type="text" id="inp-name" value="Student User">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Email Address</label>
+                        <input type="email" id="inp-email" value="student@example.com" disabled style="opacity: 0.7; cursor: not-allowed;">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Student ID / Reg No</label>
+                        <input type="text" id="inp-id" placeholder="e.g. 2024CS001">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Expected Graduation</label>
+                        <input type="number" id="inp-grad" placeholder="2025" min="2020" max="2030">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Technical Skills (comma separated)</label>
+                        <input type="text" id="inp-skills" placeholder="Java, Python, React, Machine Learning..." onblur="updateSkills()">
+                        <div class="skills-container" id="skills-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Resume</label>
+                        <div class="resume-upload">
+                            <span style="font-size: 2rem;">📄</span>
+                            <p>Click to browse or drag and drop your resume (PDF)<br><span style="color: var(--primary);">Current file: resume_v2.pdf</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-save" onclick="saveProfile()">Save Profile Changes</button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('ai_portal_username') || 'Student';
+            document.getElementById('display-name').textContent = username;
+            document.getElementById('inp-name').value = username;
+            
+            // Set initials
+            if(username) {
+                document.getElementById('avatar-initials').textContent = username.substring(0, 2).toUpperCase();
+            }
+
+            // Load mock skills
+            renderSkills(['Java', 'Python', 'Machine Learning', 'React']);
+        });
+
+        function renderSkills(skills) {
+            const container = document.getElementById('skills-list');
+            container.innerHTML = '';
+            skills.forEach(skill => {
+                if(!skill.trim()) return;
+                const tag = document.createElement('div');
+                tag.className = 'skill-tag';
+                tag.innerHTML = `${skill.trim()} <button onclick="this.parentElement.remove()">×</button>`;
+                container.appendChild(tag);
+            });
+        }
+
+        function updateSkills() {
+            const val = document.getElementById('inp-skills').value;
+            if(val) {
+                renderSkills(val.split(','));
+            }
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('inp-name').value;
+            localStorage.setItem('ai_portal_username', newName);
+
+            document.getElementById('display-name').textContent = newName;
+            document.getElementById('avatar-initials').textContent = newName.substring(0, 2).toUpperCase();
+
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.textContent;
+            btn.textContent = 'Saved Successfully ✓';
+            btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = 'linear-gradient(135deg, var(--primary), var(--accent))';
+            }, 2000);
+        }
+
+        function logout() {
+            localStorage.removeItem('ai_portal_username');
+        }
+    </script>
+</body>
+</html>
