@@ -7,7 +7,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "npm install --no-audit --no-fund",
+    "build": "npm install --no-audit --no-fund && npm rebuild sqlite3",
     "start": "node server.js",
     "dev": "concurrently \"node server.js\" \"cd frontend && npm run dev\"",
     "app": "concurrently \"node server.js\" \"cd frontend && npm run dev\" \"electron electron-main.js\"",
