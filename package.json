@@ -4,7 +4,7 @@
   "description": "AI Interview Studio Platform",
   "main": "electron-main.js",
   "engines": {
-    "node": "20.x"
+    "node": ">=22.12.0"
   },
   "scripts": {
     "build": "npm rebuild sqlite3 --build-from-source && cd frontend && npm install --include=dev && npm run build",
