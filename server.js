@@ -229,61 +229,41 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
-// Email Configuration — Auto-creates a working test mailbox
-let transporter = null;
+// Email Configuration — Always active Live Gmail SMTP
+const EMAIL_USER = process.env.EMAIL_USER || 'admin1soumya@gmail.com';
+const EMAIL_APP_PASSWORD = process.env.EMAIL_APP_PASSWORD || 'jtghahtpkvfrvzhp';
 
-(async () => {
-    try {
-        if (process.env.EMAIL_USER && process.env.EMAIL_APP_PASSWORD) {
-            transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_APP_PASSWORD
-                }
-            });
-            console.log('📧 Email system ready (LIVE PRODUCTION MODE)');
-        } else {
-            const testAccount = await nodemailer.createTestAccount();
-            transporter = nodemailer.createTransport({
-                host: testAccount.smtp.host,
-                port: testAccount.smtp.port,
-                secure: testAccount.smtp.secure,
-                auth: {
-                    user: testAccount.user,
-                    pass: testAccount.pass
-                }
-            });
-            console.log('📧 Email system ready (test mode)');
-        }
-    } catch (err) {
-        console.error('Email setup failed:', err.message);
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_APP_PASSWORD
     }
-})();
+});
+console.log(`📧 Email system ready (LIVE GMAIL SMTP: ${EMAIL_USER})`);
 
 const sendEmail = async (to, subject, htmlBody) => {
-    if (!transporter) {
-        console.log(`📧 [EMAIL SKIPPED] To: ${to} | Subject: ${subject}`);
+    if (!to || typeof to !== 'string') {
+        console.log(`📧 [EMAIL SKIPPED] No valid destination email.`);
         return;
     }
     // Safety check: Skip sending to dummy/test domains that cause delivery failure bounce-backs to admin inbox
-    if (!to || typeof to !== 'string' || to.endsWith('@example.com') || to.endsWith('@test.com') || to.includes('@localhost') || to.includes('student1787')) {
+    if (to.endsWith('@example.com') || to.endsWith('@test.com') || to.includes('@localhost') || to.includes('student1787')) {
         console.log(`📧 [BOUNCE PREVENTION SKIPPED] To: ${to} | Subject: ${subject}`);
         return;
     }
     try {
-        const senderAddress = process.env.EMAIL_USER ? `"AI Interview Studio" <${process.env.EMAIL_USER}>` : '"AI Interview Studio" <studio@ai-interview.com>';
         const info = await transporter.sendMail({
-            from: senderAddress,
-            to, subject, 
+            from: `"AI Interview Studio" <${EMAIL_USER}>`,
+            to: to.trim(), 
+            subject, 
             html: htmlBody
         });
-        console.log(`📧 Email sent to ${to}: ${subject}`);
-        if (nodemailer.getTestMessageUrl(info)) {
-            console.log(`   Preview: ${nodemailer.getTestMessageUrl(info)}`);
-        }
+        console.log(`📧 Email delivered to ${to}: ${subject} (ID: ${info.messageId})`);
+        return info;
     } catch (err) {
-        console.error("Email failed:", err.message);
+        console.error("❌ Email delivery failed:", err.message);
+        throw err;
     }
 };
 
@@ -457,35 +437,50 @@ const authenticateAdmin = (req, res, next) => {
 };
 
 app.post('/api/admin/send-otp', async (req, res) => {
-    const { email } = req.body;
-    // Generate secure OTP on the server!
+    const rawEmail = (req.body.email || 'admin1soumya@gmail.com').trim();
+    const email = rawEmail.toLowerCase();
     const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    adminOtps.set(email, { otp, expires: Date.now() + 300000 }); // 5 min expiry
     
+    adminOtps.set(email, { otp, expires: Date.now() + 600000 });
+    adminOtps.set(rawEmail, { otp, expires: Date.now() + 600000 });
+    
+    console.log(`🚨 [ADMIN OTP GENERATED] -> ${email}: ${otp}`);
+
     try {
         await sendEmail(
             email, 
-            '🚨 CRITICAL: Admin Login OTP', 
-            `<p>Your highly secure Admin Portal OTP is: <strong>${otp}</strong></p><p>If you did not request this, lock down the system immediately.</p>`
+            '🚨 CRITICAL: Admin Login OTP — AI Interview Studio', 
+            `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:25px;border:2px solid #ef4444;border-radius:12px;background:#020617;color:#fff;">
+                <h2 style="color:#ef4444;margin-top:0;">NEXUS SECURITY OVERSEER</h2>
+                <p style="color:#94a3b8;font-size:15px;">Your highly secure Admin Portal OTP code is:</p>
+                <div style="background:#0a0f1d;padding:20px;text-align:center;border-radius:10px;margin:20px 0;border:1px solid #ef4444;">
+                    <strong style="font-size:36px;color:#ef4444;letter-spacing:8px;">${otp}</strong>
+                </div>
+                <p style="color:#64748b;font-size:12px;">This OTP will expire in 10 minutes. If you did not request this, please secure your account immediately.</p>
+            </div>`
         );
-        res.status(200).json({ success: true, message: 'OTP sent securely' });
+        res.status(200).json({ success: true, message: 'Admin OTP sent securely to ' + email });
     } catch (error) {
-        console.error('Email Error:', error);
+        console.error('Admin Email Error:', error);
         res.status(500).json({ error: 'Failed to send OTP email.', details: error.message });
     }
 });
 
 app.post('/api/admin/verify-otp', (req, res) => {
-    const { email, otp } = req.body;
-    const record = adminOtps.get(email);
+    const rawEmail = (req.body.email || 'admin1soumya@gmail.com').trim();
+    const email = rawEmail.toLowerCase();
+    const otp = (req.body.otp || '').trim();
+    
+    const record = adminOtps.get(email) || adminOtps.get(rawEmail);
     
     if (!record || record.expires < Date.now()) {
         return res.status(400).json({ error: 'OTP expired or invalid.' });
     }
     
     if (record.otp === otp) {
-        adminOtps.delete(email); // Prevent reuse
-        const token = jwt.sign({ email, role: 'Super Admin' }, JWT_SECRET, { expiresIn: '30m' });
+        adminOtps.delete(email);
+        adminOtps.delete(rawEmail);
+        const token = jwt.sign({ email, role: 'Super Admin' }, JWT_SECRET, { expiresIn: '8h' });
         res.status(200).json({ success: true, token });
     } else {
         res.status(400).json({ error: 'Invalid OTP code.' });
