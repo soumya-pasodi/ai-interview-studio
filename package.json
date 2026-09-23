@@ -4,10 +4,10 @@
   "description": "AI Interview Studio Platform",
   "main": "electron-main.js",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "npm install --no-audit --no-fund && npm rebuild sqlite3",
+    "build": "npm install --build-from-source sqlite3 --no-audit --no-fund",
     "start": "node server.js",
     "dev": "concurrently \"node server.js\" \"cd frontend && npm run dev\"",
     "app": "concurrently \"node server.js\" \"cd frontend && npm run dev\" \"electron electron-main.js\"",
