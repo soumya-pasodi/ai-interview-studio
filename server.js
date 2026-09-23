@@ -71,8 +71,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files (like index.html) from the root directory
-app.use(express.static(__dirname));
+// Serve built frontend static assets from frontend/dist
+const frontendDistStatic = path.join(__dirname, 'frontend/dist');
+if (fs.existsSync(frontendDistStatic)) {
+    app.use(express.static(frontendDistStatic));
+}
 
 // Multer Storage Configuration for Local Video & Image Uploads
 const uploadsDir = path.join(__dirname, 'uploads/videos');
@@ -1693,17 +1696,16 @@ app.get('/api/admin/placement-readiness', (req, res) => {
     });
 });
 
-// Serve frontend dist in production or single-host deployment mode
-const frontendDistPath = path.join(__dirname, 'frontend/dist');
-if (fs.existsSync(frontendDistPath)) {
-    app.use(express.static(frontendDistPath));
-    app.use((req, res, next) => {
-        if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/uploads') && !req.path.startsWith('/socket.io')) {
-            return res.sendFile(path.join(frontendDistPath, 'index.html'));
+// Serve frontend React SPA index.html for all non-API GET routes
+app.use((req, res, next) => {
+    if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/uploads') && !req.path.startsWith('/socket.io')) {
+        const frontendDistIndex = path.join(__dirname, 'frontend/dist/index.html');
+        if (fs.existsSync(frontendDistIndex)) {
+            return res.sendFile(frontendDistIndex);
         }
-        next();
-    });
-}
+    }
+    next();
+});
 
 // Start Server listening on 0.0.0.0 (all network interfaces for mobile/tablet/cloud access)
 const HOST = process.env.HOST || '0.0.0.0';
