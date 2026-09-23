@@ -4,7 +4,7 @@
   "description": "AI Interview Studio Platform",
   "main": "electron-main.js",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install --include=dev && npm run build",
     "start": "node server.js",
     "dev": "concurrently \"node server.js\" \"cd frontend && npm run dev\"",
     "app": "concurrently \"node server.js\" \"cd frontend && npm run dev\" \"electron electron-main.js\"",
