@@ -272,8 +272,9 @@ const sendEmail = async (to, subject, htmlBody) => {
         return;
     }
     try {
+        const senderAddress = process.env.EMAIL_USER ? `"AI Interview Studio" <${process.env.EMAIL_USER}>` : '"AI Interview Studio" <studio@ai-interview.com>';
         const info = await transporter.sendMail({
-            from: '"AI Interview Studio — Built by Soumya & Team" <studio@ai-interview.com>',
+            from: senderAddress,
             to, subject, 
             html: htmlBody
         });
@@ -392,13 +393,14 @@ app.post('/api/login', (req, res) => {
         return res.status(400).json({ error: 'Username and password are required' });
     }
 
-    const sql = 'SELECT * FROM users WHERE username = ? AND password = ?';
-    db.get(sql, [username, password], (err, row) => {
+    const cleanIdentifier = (username || '').trim();
+    const sql = 'SELECT * FROM users WHERE (LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)) AND password = ?';
+    db.get(sql, [cleanIdentifier, cleanIdentifier, password], (err, row) => {
         if (err) {
             return res.status(500).json({ error: 'Database error: ' + err.message });
         }
         if (!row) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(401).json({ error: 'Invalid credentials. Please check your username/email and password.' });
         }
         
         if (row.status === 'pending') {

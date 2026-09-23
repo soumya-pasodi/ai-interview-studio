@@ -285,10 +285,10 @@ const Login = () => {
     };
 
     return (
-        <div style={styles.container}>
+        <div className="auth-container">
             <GlowingGrid />
             
-            <div style={styles.wrapper}>
+            <div className="auth-wrapper">
                 <motion.div 
                     onClick={() => navigate('/')}
                     whileHover={{ x: -5, color: '#0ea5e9' }}
@@ -302,7 +302,7 @@ const Login = () => {
                     <ChevronLeft size={20} /> Back to Home
                 </motion.div>
                 {/* 100% PURE HTML/CSS/REACT CODE - NO BACKGROUND IMAGES */}
-                <div style={styles.leftPanel}>
+                <div className="auth-left-panel">
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={styles.headerArea}>
                         <h3 style={styles.superTitle}>AI POWERED</h3>
                         <h1 style={styles.mainTitle}>
@@ -358,7 +358,7 @@ const Login = () => {
                 </div>
 
                 {/* RIGHT SIDE - PURE CODE LOGIN PANEL */}
-                <div style={styles.rightPanel}>
+                <div className="auth-right-panel">
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
